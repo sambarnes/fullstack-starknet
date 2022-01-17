@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "blackbox"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.7,<3.10"
+fastapi = "^0.72.0"
+"starknet.py" = "^0.1.5-alpha.0"
+obd = "^0.7.1"
+uvicorn = "^0.17.0"
+mypy = "^0.931"
+
+[tool.poetry.dev-dependencies]
+black = "^21.12b0"
+pytest = "^6.2.5"
+taskipy = "^1.9.0"
+safety = "^1.10.3"
+isort = "^5.10.1"
+
+[tool.taskipy.tasks]
+audit = "poetry export --dev --format=requirements.txt --without-hashes | safety check --stdin --full-report"
+dev = "uvicorn app.main:app --reload"
+format = "isort app/ && black app/"
+formatcheck = "black app/ --check"
+test = "pytest"
+typecheck = "mypy --config-file mypy.ini ."
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
