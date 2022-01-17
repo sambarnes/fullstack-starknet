@@ -1,4 +1,4 @@
-# Blackbox -- Immutable Vehicle Logs on StarkNet
+# Blackbox
 
 Repo containing the code for a tutorial series I'm writing while diving into StarkNet and learning Cairo.
 

@@ -1,6 +1,6 @@
 __pycache__
 .pytest_cache
-.mypy_chache
+.mypy_cache
 .vscode
 env
 
