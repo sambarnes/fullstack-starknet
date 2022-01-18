@@ -63,7 +63,7 @@ async def test_attest_state_unregistered_vehicle(contract_factory):
     nonce = 0
     some_unregistered_vehicle = 5
     message_hash = pedersen_hash(
-        nonce, pedersen_hash(some_unregistered_vehicle, state_hash)
+        nonce, pedersen_hash(some_vehicle, pedersen_hash(state_hash, 0))
     )
     sig_r, sig_s = sign(msg_hash=message_hash, priv_key=some_signer_secret)
 
@@ -82,7 +82,9 @@ async def test_attest_state_invalid_nonce(contract_factory):
 
     state_hash = 1234
     nonce = 666
-    message_hash = pedersen_hash(nonce, pedersen_hash(some_vehicle, state_hash))
+    message_hash = pedersen_hash(
+        nonce, pedersen_hash(some_vehicle, pedersen_hash(state_hash, 0))
+    )
     sig_r, sig_s = sign(msg_hash=message_hash, priv_key=some_signer_secret)
 
     with pytest.raises(StarkException):
@@ -112,7 +114,9 @@ async def test_attest_state(contract_factory):
 
     state_hash = 1234
     nonce = 0
-    message_hash = pedersen_hash(nonce, pedersen_hash(some_vehicle, state_hash))
+    message_hash = pedersen_hash(
+        nonce, pedersen_hash(some_vehicle, pedersen_hash(state_hash, 0))
+    )
     sig_r, sig_s = sign(msg_hash=message_hash, priv_key=some_signer_secret)
 
     await contract.attest_state(
@@ -132,7 +136,9 @@ async def test_set_signer_invalid_nonce(contract_factory):
     _, contract = contract_factory
 
     nonce = 666
-    message_hash = pedersen_hash(nonce, pedersen_hash(some_vehicle, some_other_signer))
+    message_hash = pedersen_hash(
+        nonce, pedersen_hash(some_vehicle, pedersen_hash(some_other_signer, 0))
+    )
     sig_r, sig_s = sign(msg_hash=message_hash, priv_key=some_owner_secret)
 
     with pytest.raises(StarkException):
@@ -150,7 +156,9 @@ async def test_set_signer_not_owner(contract_factory):
 
     nonce = await contract.get_nonce(vehicle_id=some_vehicle).call()
     nonce = nonce.result[0]
-    message_hash = pedersen_hash(nonce, pedersen_hash(some_vehicle, some_other_signer))
+    message_hash = pedersen_hash(
+        nonce, pedersen_hash(some_vehicle, pedersen_hash(some_other_signer, 0))
+    )
     # Error here: signing with vehicle signer, not owner
     sig_r, sig_s = sign(msg_hash=message_hash, priv_key=some_signer_secret)
 
@@ -169,7 +177,9 @@ async def test_set_signer(contract_factory):
 
     nonce = await contract.get_nonce(vehicle_id=some_vehicle).call()
     nonce = nonce.result[0]
-    message_hash = pedersen_hash(nonce, pedersen_hash(some_vehicle, some_other_signer))
+    message_hash = pedersen_hash(
+        nonce, pedersen_hash(some_vehicle, pedersen_hash(some_other_signer, 0))
+    )
     sig_r, sig_s = sign(msg_hash=message_hash, priv_key=some_owner_secret)
 
     await contract.set_signer(

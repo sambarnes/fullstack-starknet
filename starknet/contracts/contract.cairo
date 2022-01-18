@@ -100,9 +100,10 @@ func attest_state{
     let (expected_nonce) = vehicle_nonce.read(vehicle_id=vehicle_id)
     assert expected_nonce - nonce = 0
 
-    # Expected Signed Message = H( nonce + H( vehicle_id + state_hash ) )
-    let (sub_hash) = hash2{hash_ptr=pedersen_ptr}(vehicle_id, state_hash)
-    let (message_hash) = hash2{hash_ptr=pedersen_ptr}(nonce, sub_hash)
+    # Expected Signed Message = H( nonce + H( vehicle_id , H( signer_public_key ) ) )
+    let (h1) = hash2{hash_ptr=pedersen_ptr}(state_hash, 0)
+    let (h2) = hash2{hash_ptr=pedersen_ptr}(vehicle_id, h1)
+    let (message_hash) = hash2{hash_ptr=pedersen_ptr}(nonce, h2)
 
     # Verify signature is valid and covers the expected signed message
     let (sig_len : felt, sig : felt*) = get_tx_signature()
@@ -132,9 +133,10 @@ func set_signer{
     assert expected_nonce - nonce = 0
 
     # Verify signature
-    # Signed Message = H( nonce + H( vehicle_id + signer_public_key) )
-    let (sub_hash) = hash2{hash_ptr=pedersen_ptr}(vehicle_id, signer_public_key)
-    let (message_hash) = hash2{hash_ptr=pedersen_ptr}(nonce, sub_hash)
+    # Signed Message = H( nonce + H( vehicle_id , H( signer_public_key ) ) )
+    let (h1) = hash2{hash_ptr=pedersen_ptr}(signer_public_key, 0)
+    let (h2) = hash2{hash_ptr=pedersen_ptr}(vehicle_id, h1)
+    let (message_hash) = hash2{hash_ptr=pedersen_ptr}(nonce, h2)
     let (sig_len : felt, sig : felt*) = get_tx_signature()
     assert sig_len = 2
     verify_ecdsa_signature(
