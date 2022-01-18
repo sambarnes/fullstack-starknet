@@ -17,12 +17,12 @@ def api_info():
 @app.get(path="/api/tmp")
 async def tmp_block():
     """A temporary function to demonstrate network interaction"""
-    call_result = await starknet_client.get_block("0xf93145481a5ec656966de0ff6bfe507a2dec4fcbdb07a37cb8a2d3292305fb")
+    call_result = await starknet_client.get_block("0xf4b05e3ec5bfc9e864b95bfcb2a8f1db04101c65635a92197d1002b6a52f04")
     return {"data": call_result}
 
 
 # TODO: read this from a config file / environment
-contract_address="0x0679b088745451b811449153d7a6ebc652047c2e74fe9d4109feb1f407a4a40c"
+contract_address="0x029af160331cb2c5898999034f51f3357243a36b93c7b696f7daf0711482458e"
 vehicle_id = 1
 private_key = 12345
 public_key = 1628448741648245036800002906075225705100596136133912895015035902954123957052
@@ -59,7 +59,6 @@ async def commit():
 
     # Query current nonce to ensure we're signing the right payload
     (nonce,) = await contract.functions["get_nonce"].call(vehicle_id)
-    print(nonce)
 
     # TODO: read from locally saved diagnostic data
     state_hash = 42424242

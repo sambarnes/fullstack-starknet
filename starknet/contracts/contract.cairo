@@ -54,6 +54,13 @@ func get_signer{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
 end
 
 @view
+func get_state{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
+        vehicle_id : felt, nonce : felt) -> (state_hash : felt):
+    let (state_hash) = vehicle_state.read(vehicle_id=vehicle_id, nonce=nonce)
+    return (state_hash=state_hash)
+end
+
+@view
 func get_nonce{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(
         vehicle_id : felt) -> (nonce : felt):
     let (nonce) = vehicle_nonce.read(vehicle_id=vehicle_id)
