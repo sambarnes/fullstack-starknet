@@ -4,6 +4,7 @@ __pycache__
 .vscode
 .idea
 env
+venv
 
 artifacts
 accounts.json
