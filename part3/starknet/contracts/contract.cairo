@@ -1,7 +1,7 @@
 # The "%lang" directive declares this code as a StarkNet contract.
 %lang starknet
 
-from starkware.cairo.common.cairo_builtins import HashBuiltin, SignatureBuiltin
+from starkware.cairo.common.cairo_builtins import HashBuiltin
 from starkware.cairo.common.math import assert_not_zero
 from starkware.starknet.common.syscalls import get_caller_address
 
@@ -101,7 +101,7 @@ func set_signer{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_pt
     assert_not_zero(caller)
     assert owner_address = caller
 
-    # Update signer & increment nonce
+    # Update signer
     vehicle_signer_address.write(vehicle_id=vehicle_id, value=signer_address)
     return ()
 end

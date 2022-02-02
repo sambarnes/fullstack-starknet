@@ -4,17 +4,15 @@ from starkware.starknet.testing.starknet import Starknet
 from utils import MAX_UINT256, assert_revert, add_uint, sub_uint, to_uint
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def event_loop():
     return asyncio.new_event_loop()
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 async def safemath_mock():
     starknet = await Starknet.empty()
-    safemath = await starknet.deploy(
-        "tests/mocks/safemath_mock.cairo"
-    )
+    safemath = await starknet.deploy("tests/mocks/safemath_mock.cairo")
 
     return safemath
 

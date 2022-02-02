@@ -6,11 +6,11 @@ from starkware.starknet.definitions.error_codes import StarknetErrorCode
 from starkware.starkware_utils.error_handling import StarkException
 from starkware.starknet.public.abi import get_selector_from_name
 
-MAX_UINT256 = (2**128 - 1, 2**128 - 1)
+MAX_UINT256 = (2 ** 128 - 1, 2 ** 128 - 1)
 
 
 def str_to_felt(text):
-    b_text = bytes(text, 'ascii')
+    b_text = bytes(text, "ascii")
     return int.from_bytes(b_text, "big")
 
 
@@ -20,7 +20,7 @@ def felt_to_str(felt):
 
 
 def uint(a):
-    return(a, 0)
+    return (a, 0)
 
 
 def to_uint(a):
@@ -55,10 +55,10 @@ async def assert_revert(fun):
         assert False
     except StarkException as err:
         _, error = err.args
-        assert error['code'] == StarknetErrorCode.TRANSACTION_FAILED
+        assert error["code"] == StarknetErrorCode.TRANSACTION_FAILED
 
 
-class Signer():
+class Signer:
     """
     Utility for sending signed transactions to an Account on Starknet.
 
@@ -75,9 +75,9 @@ class Signer():
 
     Sending a transaction
 
-    >>> await signer.send_transaction(account, 
-                                      account.contract_address, 
-                                      'set_public_key', 
+    >>> await signer.send_transaction(account,
+                                      account.contract_address,
+                                      'set_public_key',
                                       [other.public_key]
                                      )
 
@@ -93,22 +93,19 @@ class Signer():
     async def send_transaction(self, account, to, selector_name, calldata, nonce=None):
         if nonce is None:
             execution_info = await account.get_nonce().call()
-            nonce, = execution_info.result
+            (nonce,) = execution_info.result
 
         selector = get_selector_from_name(selector_name)
         message_hash = hash_message(
-            account.contract_address, to, selector, calldata, nonce)
+            account.contract_address, to, selector, calldata, nonce
+        )
         sig_r, sig_s = self.sign(message_hash)
 
-        return await account.execute(to, selector, calldata, nonce).invoke(signature=[sig_r, sig_s])
+        return await account.execute(to, selector, calldata, nonce).invoke(
+            signature=[sig_r, sig_s]
+        )
 
 
 def hash_message(sender, to, selector, calldata, nonce):
-    message = [
-        sender,
-        to,
-        selector,
-        compute_hash_on_elements(calldata),
-        nonce
-    ]
+    message = [sender, to, selector, compute_hash_on_elements(calldata), nonce]
     return compute_hash_on_elements(message)

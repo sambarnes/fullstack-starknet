@@ -8,21 +8,20 @@ from utils import Signer
 signer = Signer(123456789987654321)
 other = Signer(987654321123456789)
 
-IACCOUNT_ID = 0x50b70dcb
+IACCOUNT_ID = 0x50B70DCB
 TRUE = 1
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def event_loop():
     return asyncio.new_event_loop()
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 async def account_factory():
     starknet = await Starknet.empty()
     account = await starknet.deploy(
-        "contracts/Account.cairo",
-        constructor_calldata=[signer.public_key]
+        "contracts/Account.cairo", constructor_calldata=[signer.public_key]
     )
 
     return starknet, account
@@ -47,7 +46,9 @@ async def test_execute(account_factory):
     execution_info = await initializable.initialized().call()
     assert execution_info.result == (0,)
 
-    await signer.send_transaction(account, initializable.contract_address, 'initialize', [])
+    await signer.send_transaction(
+        account, initializable.contract_address, "initialize", []
+    )
 
     execution_info = await initializable.initialized().call()
     assert execution_info.result == (1,)
@@ -59,15 +60,19 @@ async def test_return_value(account_factory):
     initializable = await starknet.deploy("contracts/Initializable.cairo")
 
     # initialize, set `initialized = 1`
-    await signer.send_transaction(account, initializable.contract_address, 'initialize', [])
+    await signer.send_transaction(
+        account, initializable.contract_address, "initialize", []
+    )
 
-    read_info = await signer.send_transaction(account, initializable.contract_address, 'initialized', [])
+    read_info = await signer.send_transaction(
+        account, initializable.contract_address, "initialized", []
+    )
     call_info = await initializable.initialized().call()
-    (call_result, ) = call_info.result
+    (call_result,) = call_info.result
     assert read_info.result.response == [call_result]  # 1
 
 
-@ pytest.mark.asyncio
+@pytest.mark.asyncio
 async def test_nonce(account_factory):
     starknet, account = account_factory
     initializable = await starknet.deploy("contracts/Initializable.cairo")
@@ -76,21 +81,27 @@ async def test_nonce(account_factory):
 
     # lower nonce
     try:
-        await signer.send_transaction(account, initializable.contract_address, 'initialize', [], current_nonce - 1)
+        await signer.send_transaction(
+            account, initializable.contract_address, "initialize", [], current_nonce - 1
+        )
         assert False
     except StarkException as err:
         _, error = err.args
-        assert error['code'] == StarknetErrorCode.TRANSACTION_FAILED
+        assert error["code"] == StarknetErrorCode.TRANSACTION_FAILED
 
     # higher nonce
     try:
-        await signer.send_transaction(account, initializable.contract_address, 'initialize', [], current_nonce + 1)
+        await signer.send_transaction(
+            account, initializable.contract_address, "initialize", [], current_nonce + 1
+        )
         assert False
     except StarkException as err:
         _, error = err.args
-        assert error['code'] == StarknetErrorCode.TRANSACTION_FAILED
+        assert error["code"] == StarknetErrorCode.TRANSACTION_FAILED
     # right nonce
-    await signer.send_transaction(account, initializable.contract_address, 'initialize', [], current_nonce)
+    await signer.send_transaction(
+        account, initializable.contract_address, "initialize", [], current_nonce
+    )
 
     execution_info = await initializable.initialized().call()
     assert execution_info.result == (1,)
@@ -104,7 +115,9 @@ async def test_public_key_setter(account_factory):
     assert execution_info.result == (signer.public_key,)
 
     # set new pubkey
-    await signer.send_transaction(account, account.contract_address, 'set_public_key', [other.public_key])
+    await signer.send_transaction(
+        account, account.contract_address, "set_public_key", [other.public_key]
+    )
 
     execution_info = await account.get_public_key().call()
     assert execution_info.result == (other.public_key,)

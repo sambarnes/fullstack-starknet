@@ -3,16 +3,11 @@ from typing import Tuple
 
 import pytest
 import asyncio
-from starkware.crypto.signature.signature import (
-    pedersen_hash,
-    sign,
-)
 from starkware.starknet.testing.starknet import Starknet, StarknetContract
 from starkware.starkware_utils.error_handling import StarkException
 from utils import Signer
 
 
-# Some mock keypairs to test with
 some_vehicle = 1
 
 
@@ -35,17 +30,16 @@ async def contract_factory() -> Tuple[Starknet, Account, Account, StarknetContra
     owner_account = Account(
         signer=some_signer,
         contract=await starknet.deploy(
-            "contracts/Account.cairo",
-            constructor_calldata=[some_signer.public_key]
-        )
+            "contracts/Account.cairo", constructor_calldata=[some_signer.public_key]
+        ),
     )
     some_other_signer = Signer(private_key=123456789)
     signer_account = Account(
         signer=some_other_signer,
         contract=await starknet.deploy(
             "contracts/Account.cairo",
-            constructor_calldata=[some_other_signer.public_key]
-        )
+            constructor_calldata=[some_other_signer.public_key],
+        ),
     )
     contract = await starknet.deploy("contracts/contract.cairo")
     return starknet, owner_account, signer_account, contract
@@ -57,10 +51,10 @@ async def test_register_vehicle(contract_factory):
     _, owner_account, signer_account, contract = contract_factory
 
     await owner_account.signer.send_transaction(
-        owner_account.contract,
-        contract.contract_address,
-        'register_vehicle',
-        [some_vehicle, signer_account.contract.contract_address],
+        account=owner_account.contract,
+        to=contract.contract_address,
+        selector_name="register_vehicle",
+        calldata=[some_vehicle, signer_account.contract.contract_address],
     )
 
     # Check the owner is registered
@@ -70,7 +64,6 @@ async def test_register_vehicle(contract_factory):
     # ... and the signer
     observed_signer = await contract.get_signer(vehicle_id=some_vehicle).call()
     assert observed_signer.result == (signer_account.contract.contract_address,)
-
 
 
 @pytest.mark.asyncio
@@ -85,7 +78,7 @@ async def test_attest_state_unregistered_vehicle(contract_factory):
         await signer_account.signer.send_transaction(
             signer_account.contract,
             contract.contract_address,
-            'attest_state',
+            "attest_state",
             [some_unregistered_vehicle, state_id, state_hash],
         )
 
@@ -99,10 +92,10 @@ async def test_attest_state_invalid_account(contract_factory):
     state_hash = 1234
     with pytest.raises(StarkException):
         await owner_account.signer.send_transaction(
-            owner_account.contract,
-            contract.contract_address,
-            'attest_state',
-            [some_vehicle, state_id, state_hash],
+            account=owner_account.contract,
+            to=contract.contract_address,
+            selector_name="attest_state",
+            calldata=[some_vehicle, state_id, state_hash],
         )
 
 
@@ -114,14 +107,16 @@ async def test_attest_state(contract_factory):
     state_id = 1
     state_hash = 1234
     await signer_account.signer.send_transaction(
-        signer_account.contract,
-        contract.contract_address,
-        'attest_state',
-        [some_vehicle, state_id, state_hash],
+        account=signer_account.contract,
+        to=contract.contract_address,
+        selector_name="attest_state",
+        calldata=[some_vehicle, state_id, state_hash],
     )
 
     # Check the nonce was incremented
-    observed_state = await contract.get_state(vehicle_id=some_vehicle, state_id=state_id).call()
+    observed_state = await contract.get_state(
+        vehicle_id=some_vehicle, state_id=state_id
+    ).call()
     assert observed_state.result == (state_hash,)
 
 
@@ -132,11 +127,12 @@ async def test_set_signer_invalid_account(contract_factory):
 
     some_new_signer_address = 88888888
     with pytest.raises(StarkException):
+        # Send transaction with the delegated signer not the owner
         await signer_account.signer.send_transaction(
-            signer_account.contract,
-            contract.contract_address,
-            'set_signer',
-            [some_vehicle, some_new_signer_address],
+            account=signer_account.contract,
+            to=contract.contract_address,
+            selector_name="set_signer",
+            calldata=[some_vehicle, some_new_signer_address],
         )
 
 
@@ -147,6 +143,7 @@ async def test_set_signer_no_account(contract_factory):
 
     some_new_signer_address = 88888888
     with pytest.raises(StarkException):
+        # Transaction not sent through an account
         await contract.set_signer(
             vehicle_id=some_vehicle,
             signer_address=some_new_signer_address,
@@ -160,10 +157,10 @@ async def test_set_signer(contract_factory):
 
     some_new_signer_address = 88888888
     await owner_account.signer.send_transaction(
-        owner_account.contract,
-        contract.contract_address,
-        'set_signer',
-        [some_vehicle, some_new_signer_address],
+        account=owner_account.contract,
+        to=contract.contract_address,
+        selector_name="set_signer",
+        calldata=[some_vehicle, some_new_signer_address],
     )
 
     # Check that the signer is updated

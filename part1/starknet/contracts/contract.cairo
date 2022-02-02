@@ -1,10 +1,6 @@
 # The "%lang" directive declares this code as a StarkNet contract.
 %lang starknet
 
-# The "%builtins" directive declares the builtins used by the contract.
-# For example, the "range_check" builtin is used to compare values.
-%builtins pedersen range_check ecdsa
-
 from starkware.cairo.common.cairo_builtins import HashBuiltin, SignatureBuiltin
 from starkware.cairo.common.hash import hash2
 from starkware.cairo.common.math import assert_not_zero
