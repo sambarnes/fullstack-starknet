@@ -67,6 +67,24 @@ async def test_register_vehicle(contract_factory):
 
 
 @pytest.mark.asyncio
+async def test_register_vehicle_again(contract_factory):
+    """Should fail to register a vehicle a second time"""
+    _, owner_account, signer_account, contract = contract_factory
+
+    with pytest.raises(StarkException):
+        await signer_account.signer.send_transaction(
+            account=signer_account.contract,
+            to=contract.contract_address,
+            selector_name="register_vehicle",
+            calldata=[some_vehicle, signer_account.contract.contract_address],
+        )
+
+    # Check the original owner is still registered
+    observed_registrant = await contract.get_owner(vehicle_id=some_vehicle).call()
+    assert observed_registrant.result == (owner_account.contract.contract_address,)
+
+
+@pytest.mark.asyncio
 async def test_attest_state_unregistered_vehicle(contract_factory):
     """Should fail with an unregistered vehicle"""
     _, _, signer_account, contract = contract_factory
@@ -91,6 +109,7 @@ async def test_attest_state_invalid_account(contract_factory):
     state_id = 1
     state_hash = 1234
     with pytest.raises(StarkException):
+        # Attest with owner rather than delegate signer
         await owner_account.signer.send_transaction(
             account=owner_account.contract,
             to=contract.contract_address,
@@ -100,8 +119,22 @@ async def test_attest_state_invalid_account(contract_factory):
 
 
 @pytest.mark.asyncio
+async def test_attest_state_no_account(contract_factory):
+    """Should fail to commit state if no account signed the tx"""
+    _, _, _, contract = contract_factory
+
+    with pytest.raises(StarkException):
+        # Transaction not sent through an account
+        await contract.attest_state(
+            vehicle_id=some_vehicle,
+            state_id=5,
+            state_hash=4567,
+        ).invoke()
+
+
+@pytest.mark.asyncio
 async def test_attest_state(contract_factory):
-    """Should successfully attest to a state hash & increment nonce"""
+    """Should successfully attest to a state hash"""
     _, _, signer_account, contract = contract_factory
 
     state_id = 1
@@ -113,7 +146,7 @@ async def test_attest_state(contract_factory):
         calldata=[some_vehicle, state_id, state_hash],
     )
 
-    # Check the nonce was incremented
+    # Check the state hash was committed
     observed_state = await contract.get_state(
         vehicle_id=some_vehicle, state_id=state_id
     ).call()
