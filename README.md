@@ -14,4 +14,7 @@ Tutorial text kept on hackmd for easier editing:
 * **[Part 3]** 🧑 [StarkNet Account Abstraction & Using Standard Contracts](https://hackmd.io/@sambarnes/rkGekNvAY)
 	* learn the difference between Ethereum & StarkNet Account models
 	* refactor your contract & tests to use standard OpenZeppelin Accounts
+* **[Part 4]** 💽 [Local Devnet & Starknet.py's Account Capabilities](https://hackmd.io/@sambarnes/By7kitOCt)
+	* learn to use the devnet for boosted development speed
+	* leverage starknet.py's AccountClient to proxy transactions through a deployed Account
 * *future parts coming soon...*

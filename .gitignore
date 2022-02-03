@@ -3,8 +3,10 @@ __pycache__
 .mypy_cache
 .vscode
 .idea
+.env
 env
 venv
 
 artifacts
-accounts.json
+*accounts.json
+*deployments.txt

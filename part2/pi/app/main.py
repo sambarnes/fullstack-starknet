@@ -33,8 +33,7 @@ async def register_vehicle():
     """Registers the car on chain, and returns the transaction hash."""
     contract = await Contract.from_address(contract_address, starknet_client)
 
-    # Writes (i.e. invokes) aren't accepted immediately.
-    # Use `invoke` for @externals
+    # Reads (i.e. calls) are executed immediately.
     (owner,) = await contract.functions["get_owner"].call(vehicle_id)
     if owner != 0:
         raise HTTPException(status_code=403, detail="Vehicle already registered")
