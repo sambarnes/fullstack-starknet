@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://cairopal.com
+
+# Sitemaps
+Sitemap: https://cairopal.com/sitemap.xml
