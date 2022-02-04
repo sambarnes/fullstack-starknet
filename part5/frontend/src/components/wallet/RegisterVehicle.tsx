@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Code,
+  Input,
   Link,
   Text,
   useBreakpointValue,
@@ -10,12 +11,13 @@ import {
 import { stark } from "starknet";
 
 import { useStarknet } from "context";
+import React from "react";
 
-const MintTokens = () => {
+const RegisterVehicle = () => {
   const CONTRACT_ADDRESS =
-    "0x06a09ccb1caaecf3d9683efe335a667b2169a409d19c589ba1eb771cd210af75";
+    "0x04f2d8ea9774229a040924c37b12a9244bae7451000502612340488e659206f2";
 
-  const { connected, library } = useStarknet();
+  const { connected, library, account } = useStarknet();
   const { colorMode } = useColorMode();
   const textSize = useBreakpointValue({
     base: "xs",
@@ -23,31 +25,35 @@ const MintTokens = () => {
   });
 
   const { getSelectorFromName } = stark;
-  const selector = getSelectorFromName("mint");
+  const selector = getSelectorFromName("register_vehicle");
 
-  const mintTokens = async () => {
-    const mintTokenResponse = await library.addTransaction({
+  const registerVehicle = async (vehicleId: string) => {
+    const account_big = BigInt(account!);
+    const account_address_param = account_big.toString(10);;
+    const registerVehicleResponse = await library.addTransaction({
       type: "INVOKE_FUNCTION",
       contract_address: CONTRACT_ADDRESS,
       entry_point_selector: selector,
       calldata: [
-        "25337092028752943692105536859798085962999747221745650943814125673320853150",
-        "10000000000000000000",
-        "0",
+        vehicleId,
+        account_address_param, // signer address (same as owner for simplicity)
       ],
     });
     // eslint-disable-next-line no-console
-    console.log(mintTokenResponse);
+    console.log(registerVehicleResponse);
   };
+
+  const [value, setValue] = React.useState('');
+  const handleChange = (event: any) => setValue(event.target.value);
 
   return (
     <Box>
       <Text as="h2" marginTop={4} fontSize="2xl">
-        Mint Test Tokens
+        Register Vehicle
       </Text>
       <Box d="flex" flexDirection="column">
-        <Text>Test Token Contract:</Text>
         <Code marginTop={4} w="fit-content">
+          contract:
           {/* {`${CONTRACT_ADDRESS.substring(0, 4)}...${CONTRACT_ADDRESS.substring(
             CONTRACT_ADDRESS.length - 4
           )}`} */}
@@ -62,14 +68,22 @@ const MintTokens = () => {
           </Link>
         </Code>
         {connected && (
+          <Input
+            my={4}
+            variant="flushed"
+            placeholder="Vehicle ID"
+            onChange={handleChange}
+          />
+        )}
+        {connected && (
           <Button
             my={4}
             w="fit-content"
             onClick={() => {
-              mintTokens();
+              registerVehicle(value);
             }}
           >
-            Mint Tokens
+            Register Vehicle
           </Button>
         )}
         {!connected && (
@@ -80,7 +94,7 @@ const MintTokens = () => {
             borderRadius={4}
           >
             <Box fontSize={textSize}>
-              Connect your wallet to mint test tokens.
+              Connect your wallet to register a vehicle.
             </Box>
           </Box>
         )}
@@ -89,4 +103,4 @@ const MintTokens = () => {
   );
 };
 
-export default MintTokens;
+export default RegisterVehicle;

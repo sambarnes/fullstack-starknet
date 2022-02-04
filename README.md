@@ -1,8 +1,10 @@
-# Blackbox
+# FullStack StarkNet
 
 Repo containing the code for a tutorial series I'm writing while diving into StarkNet and learning Cairo.
 
-Creating an immutable [blackbox](https://en.wikipedia.org/wiki/Flight_recorder) for cars.
+Creating an immutable [black box](https://en.wikipedia.org/wiki/Flight_recorder) for cars.
+
+![Design diagram](https://i.imgur.com/i0ZFjfO.png)
 
 Tutorial text kept on hackmd for easier editing:
 
@@ -17,4 +19,7 @@ Tutorial text kept on hackmd for easier editing:
 * **[Part 4]** 💽 [Local Devnet & Starknet.py's Account Capabilities](https://hackmd.io/@sambarnes/By7kitOCt)
 	* learn to use the devnet for boosted development speed
 	* leverage starknet.py's AccountClient to proxy transactions through a deployed Account
+* **[Part 5]** 🎨 [StarkNet Frontends w/ Cairopal & Argent X](https://hackmd.io/@sambarnes/HydPlH9CY)
+	* build a frontend from the community made dapp template
+	* connect to an account in your Argent X wallet & sign transactions
 * *future parts coming soon...*
