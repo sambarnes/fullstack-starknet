@@ -23,3 +23,6 @@ Tutorial text kept on hackmd for easier editing:
 	* build a frontend from the community made dapp template
 	* connect to an account in your Argent X wallet & sign transactions
 * *future parts coming soon...*
+
+
+![Frontend](https://i.imgur.com/un1q1sB.png)
