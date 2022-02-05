@@ -2,7 +2,7 @@ import { Box } from "@chakra-ui/react";
 
 import CTASection from "components/samples/CTASection";
 import SomeText from "components/samples/SomeText";
-import { RegisterVehicle, Transactions } from "components/wallet";
+import { RegisterVehicle, Transactions, UpdateSigner } from "components/wallet";
 
 const Home = () => {
   return (
@@ -11,6 +11,7 @@ const Home = () => {
       <Box flex="1 1 auto">
         <Transactions />
         <RegisterVehicle />
+        <UpdateSigner />
       </Box>
       <CTASection />
     </Box>

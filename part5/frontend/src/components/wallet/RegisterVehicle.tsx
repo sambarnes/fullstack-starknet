@@ -10,13 +10,11 @@ import {
 } from "@chakra-ui/react";
 import { stark } from "starknet";
 
+import { CONTRACT_ADDRESS } from "./consts";
 import { useStarknet } from "context";
 import React from "react";
 
 const RegisterVehicle = () => {
-  const CONTRACT_ADDRESS =
-    "0x04f2d8ea9774229a040924c37b12a9244bae7451000502612340488e659206f2";
-
   const { connected, library, account } = useStarknet();
   const { colorMode } = useColorMode();
   const textSize = useBreakpointValue({
@@ -28,15 +26,14 @@ const RegisterVehicle = () => {
   const selector = getSelectorFromName("register_vehicle");
 
   const registerVehicle = async (vehicleId: string) => {
-    const account_big = BigInt(account!);
-    const account_address_param = account_big.toString(10);;
+    const accountAddressParam = BigInt(account!).toString(10);;
     const registerVehicleResponse = await library.addTransaction({
       type: "INVOKE_FUNCTION",
       contract_address: CONTRACT_ADDRESS,
       entry_point_selector: selector,
       calldata: [
         vehicleId,
-        account_address_param, // signer address (same as owner for simplicity)
+        accountAddressParam, // signer address (same as owner for simplicity)
       ],
     });
     // eslint-disable-next-line no-console
@@ -50,6 +47,10 @@ const RegisterVehicle = () => {
     <Box>
       <Text as="h2" marginTop={4} fontSize="2xl">
         Register Vehicle
+      </Text>
+      <Text marginTop={4}>
+        Sign up a new vehicle, registering it to a connected Argent X account.
+        The signing authority will default to the owner.
       </Text>
       <Box d="flex" flexDirection="column">
         <Code marginTop={4} w="fit-content">
@@ -67,14 +68,15 @@ const RegisterVehicle = () => {
             {CONTRACT_ADDRESS}
           </Link>
         </Code>
+
         {connected && (
           <Input
             my={4}
-            variant="flushed"
             placeholder="Vehicle ID"
             onChange={handleChange}
           />
         )}
+
         {connected && (
           <Button
             my={4}
@@ -83,9 +85,10 @@ const RegisterVehicle = () => {
               registerVehicle(value);
             }}
           >
-            Register Vehicle
+            Register
           </Button>
         )}
+
         {!connected && (
           <Box
             backgroundColor={colorMode === "light" ? "gray.200" : "gray.500"}

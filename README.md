@@ -4,8 +4,6 @@ Repo containing the code for a tutorial series I'm writing while diving into Sta
 
 Creating an immutable [black box](https://en.wikipedia.org/wiki/Flight_recorder) for cars.
 
-![Design diagram](https://i.imgur.com/i0ZFjfO.png)
-
 Tutorial text kept on hackmd for easier editing:
 
 * **[Part 1]** 🚧 [Project Setup & Getting Started with Cairo](https://hackmd.io/@sambarnes/BJvGs0JpK)
@@ -24,5 +22,10 @@ Tutorial text kept on hackmd for easier editing:
 	* connect to an account in your Argent X wallet & sign transactions
 * *future parts coming soon...*
 
+![Design diagram](https://i.imgur.com/i0ZFjfO.png)
 
-![Frontend](https://i.imgur.com/un1q1sB.png)
+## Finished Product
+
+A react frontend that interacts with our deployed StarkNet contract, using Argent X accounts & browser extension:
+
+![Frontend](https://i.imgur.com/bxVGVU5.png)
