@@ -20,7 +20,9 @@ Tutorial text kept on hackmd for easier editing:
 * **[Part 5]** 🎨 [StarkNet Frontends w/ Cairopal & Argent X](https://hackmd.io/@sambarnes/HydPlH9CY)
 	* build a frontend from the community made dapp template
 	* connect to an account in your Argent X wallet & sign transactions
-* *future parts coming soon...*
+* **[Notes]** 💰 [Contract Costs & Why Our Design Needs Work](https://hackmd.io/@sambarnes/SkxMZHhRK)
+	* learn about the future of transaction fees in StarkNet & how to write code with that in mind
+	* implement a [Bloom filter](https://github.com/sambarnes/cairo-bloom) in cairo
 
 ![Design diagram](https://i.imgur.com/i0ZFjfO.png)
 
