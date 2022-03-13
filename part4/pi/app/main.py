@@ -47,7 +47,6 @@ async def register_vehicle():
 
     invocation = await contract.functions["register_vehicle"].invoke(
         vehicle_id=config.vehicle_id,
-        owner_address=int(config.signer_address, 16),
         signer_address=int(config.signer_address, 16),
     )
     await invocation.wait_for_acceptance()
