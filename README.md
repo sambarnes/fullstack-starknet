@@ -1,10 +1,11 @@
+
+> **DEPRECATION:** *Don't bother learning with this repo anymore. This is all early Cairo 0 code and things have changed a lot since (for the better lol cairo 0 was like chewing glass)*
+
+---
+
 # Full-Stack StarkNet
 
 Repo containing the code for a short tutorial series I wrote while diving into StarkNet and learning Cairo. Aims to onramp existing devs to a little bit of everything.
-
-> **NOTE:** *Since this space moves so quickly, a lot of the libraries used are shifting underneath this tutorial.*
->
-> *If you see something that isn’t working, you are probably using the newest version of a contract or library. Tweaks are likely necessary! Play around and debug, and feel free to submit a PR to help the next dev!* :)
 
 Creating a [black box](https://en.wikipedia.org/wiki/Flight_recorder) for cars, enabling immutable diagnostics.
 
